@@ -1,0 +1,35 @@
+version: '3'
+services:
+  backend:
+    container_name: 'chat_auth_node'
+    build: .
+    depends_on:
+      - mongo_database
+    ports:
+      - 3000:3000
+    # environment:
+    #   - DB_URL=mongodb://mongo_database:27017/chat_node
+    command: yarn start
+
+  mongo_database:
+    image: mongo
+    restart: always
+    container_name: 'chat_auth_node_mongo'
+    volumes:
+      - mongodb_data_container:/data/db
+    ports:
+      - 27017:27017
+
+  redis_cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes: 
+      - cache:/data
+
+volumes:
+  mongodb_data_container:
+  cache:
